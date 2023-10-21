@@ -1,0 +1,28 @@
+name: Deployer
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Log in to Registry
+        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d
+        with:
+          registry: cr.yandex
+          username: json_key
+          password: ${{ secrets.YCR_TOKEN }}
+      - name: Add private key
+        env:
+          ID_RSA: ${{ secrets.ID_RSA }}
+        run: mkdir .ssh && touch .ssh/id_rsa && printf -- "$ID_RSA" > .ssh/id_rsa
+      - name: Build and push docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: cr.yandex/${{ secrets.YR_ID }}/${{ secrets.YR_NAME }}:deployer

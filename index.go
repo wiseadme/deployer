@@ -19,7 +19,7 @@ func (hwHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 		sshUser := os.Getenv("SSH_USER")
 		sshHost := os.Getenv("SSH_HOST")
 		// run ssh an ssh command using user and host
-		cmd := exec.Command("./deploy", sshUser, sshHost)
+		cmd := exec.Command("./deploy.sh", sshUser, sshHost)
 		_, err := cmd.StdoutPipe()
 
 		err = cmd.Start()
